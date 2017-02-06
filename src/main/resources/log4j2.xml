@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml> 
+<Configuration debug="true">
+
+	<DynamicThresholdFilter key="X-OnDemand-LogLevel" onMatch="ACCEPT" onMismatch="NEUTRAL">
+        <KeyValuePair key="TRACE" value="TRACE"/>
+        <KeyValuePair key="DEBUG" value="DEBUG"/>
+        <KeyValuePair key="INFO" value="INFO"/>
+        <KeyValuePair key="WARN" value="WARN"/>
+        <KeyValuePair key="ERROR" value="ERROR"/>
+        <KeyValuePair key="FATAL" value="FATAL"/>
+    </DynamicThresholdFilter>
+    
+    <Properties>
+
+    </Properties>
+
+    <Appenders>
+       <RollingFile name="LargeRollingFile"
+                     fileName="/opt/IBM/WebSphere/AppServer/logs/reference-rest-detail.log"
+                     filePattern="/opt/IBM/WebSphere/AppServer/logs/reference-rest-detail-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <pattern>[%t] [%d] [ref-requestUUID=%X{phx-requestUUID}] %-5p %c %x - %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="4"/>
+        </RollingFile>
+        <RollingFile name="RollingFile"
+	                     fileName="/opt/IBM/WebSphere/AppServer/logs/reference-rest.log"
+	                     filePattern="/opt/IBM/WebSphere/AppServer/logs/reference-rest-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <pattern>[%t] [%d] %-5p [ref-requestUUID=%X{phx-requestUUID}] %c %x - %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="4"/>
+        </RollingFile>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>[%t] [%d] %-5p [ref-requestUUID=%X{phx-requestUUID}] %c %x - %m%n</pattern>
+            </PatternLayout>
+        </Console>
+    </Appenders>
+    <Loggers>
+ 
+        <Logger name="org.hibernate.SQL" level="debug">
+            <AppenderRef ref="SQLTrace"/>
+        </Logger>
+        <Logger name="org.hibernate.stat.internal.ConcurrentStatisticsImpl" level="debug">
+            <AppenderRef ref="SQLTrace"/>
+        </Logger>
+
+	
+		<Logger name="com.jersey.spring.reference" level="debug"/>
+    
+		<!-- Dependency Loggers - END -->
+
+        <Root level="info">
+            <Appender-ref ref="RollingFile"/>
+            <Appender-ref ref="Console"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
